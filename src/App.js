@@ -1,12 +1,45 @@
-import React, { Component, Fragment } from "react";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+  withRouter,
+} from "react-router-dom";
 
 import "./App.css";
+import NewPlace from "./places/pages/NewPlace";
+import Users from "./users/pages/Users";
+import UserPlaces from "./places/pages/UserPlaces";
+import MainNavigation from "./shared/components/Navigation/MainNavigation";
+import UpdatePlace from "./places/pages/UpdatePlace";
+const App = () => {
+  return (
+    <Router>
+      <MainNavigation />
+      <main>
+        <Switch>
+          <Route path="/" exact>
+            <Users />
+          </Route>
 
-class App extends Component {
-  render() {
-    return <div>App</div>;
-  }
-}
+          <Route path="/:userId/places" exact>
+            <UserPlaces />
+          </Route>
+
+          <Route path="/places/new" exact>
+            <NewPlace />
+          </Route>
+
+          <Route path="/places/:placeId" exact>
+            <UpdatePlace />
+          </Route>
+
+          <Redirect to="/" />
+        </Switch>
+      </main>
+    </Router>
+  );
+};
 
 export default withRouter(App);
