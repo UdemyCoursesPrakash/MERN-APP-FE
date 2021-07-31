@@ -1,56 +1,46 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
 import PlaceList from "../components/PlaceList";
-
-const DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "Wankhede",
-    description: "Indias best cricket stadium",
-    imageUrl:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Wankhede_Stadium_%2886312941%29.jpeg/1200px-Wankhede_Stadium_%2886312941%29.jpeg",
-    address: "Mumbai",
-    locatoin: {
-      lat: 18.9388528,
-      lng: 72.8235753,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Chinnaswami",
-    description: "Karnataka Cricket stadium",
-    imageUrl: "https://www.cricwindow.com/images/stadiums/wankhede_stadium.jpg",
-    address: "Bangaluru",
-    locatoin: {
-      lat: 12.9793652,
-      lng: 77.5974792,
-    },
-    creator: "u2",
-  },
-  {
-    id: "p3",
-    title: "MCA",
-    description: "Maharashtra Cricket Associatoin",
-    imageUrl: "https://www.cricwindow.com/images/stadiums/wankhede_stadium.jpg",
-    address: "Pune",
-    locatoin: {
-      lat: 18.9388528,
-      lng: 72.8235753,
-    },
-    creator: "u2",
-  },
-];
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import AuthContext from "../../shared/context/auth-context";
 
 const UserPlaces = () => {
   const userId = useParams().userId;
+  const [places, setPlaces] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const authContext = useContext(AuthContext);
 
-  const filteredPlaces = DUMMY_PLACES.filter(
-    (place) => place.creator === userId
-  );
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
 
-  return <PlaceList items={filteredPlaces} />;
+        const response = await sendRequest('http://localhost:5000/api/places/user/' + userId);
+
+        setPlaces(response.places);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchPlaces();
+  }, [sendRequest, userId])
+
+  const deletePlaceHandler = (deletedPlaceId) => {
+    setPlaces((previousPlaces) => {
+      return previousPlaces.filter(place => place.id != deletedPlaceId)
+    })
+  }
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && <LoadingSpinner asOverlay />}
+      {!isLoading && places && <PlaceList onDeletePlace={deletePlaceHandler} items={places} />}
+
+    </React.Fragment>
+  )
 };
 
 export default UserPlaces;
