@@ -106,7 +106,7 @@ const Auth = () => {
           formData
         );
 
-        authContext.login(response.user, response.token);
+        authContext.login(response.userId, response.token);
       } catch (error) {
         console.log(error);
       }

@@ -51,7 +51,7 @@ const NewPlace = () => {
       formData.append('title', formState.inputs.title.value);
       formData.append('description', formState.inputs.description.value);
       formData.append('address', formState.inputs.address.value);
-      formData.append('creator', authContext.userId);
+      // formData.append('creator', authContext.userId); // now we have auth middleware on server. In that middleware we are storing userid. We can take it from there
       formData.append('image', formState.inputs.image.value);
 
       console.log(formData);
