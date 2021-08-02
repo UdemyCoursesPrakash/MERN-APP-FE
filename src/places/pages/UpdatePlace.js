@@ -67,9 +67,10 @@ const UpdatePlace = () => {
         }),
         {
           "Content-Type": "application/json",
+          "Authorization": "Bearer " + authContext.token
         }
       );
-      history.push(`${authContext.user.id}/places`);
+      history.push(`${authContext.userId}/places`);
     } catch (error) {
       console.log(error)
     }

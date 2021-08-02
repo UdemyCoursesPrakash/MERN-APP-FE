@@ -82,7 +82,7 @@ const Auth = () => {
             "Content-Type": "application/json",
           },
         );
-        authContext.login(response.user);
+        authContext.login(response.userId, response.token);
 
       } catch (error) {
         console.log(error);
@@ -106,7 +106,7 @@ const Auth = () => {
           formData
         );
 
-        authContext.login(response.user);
+        authContext.login(response.user, response.token);
       } catch (error) {
         console.log(error);
       }

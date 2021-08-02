@@ -31,8 +31,18 @@ const PlaceItem = (props) => {
 
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false);
-    await sendRequest(`http://localhost:5000/api/places/${props.id}`, 'DELETE');
-    props.onDelete(props.id);
+    try {
+      await sendRequest(`http://localhost:5000/api/places/${props.id}`,
+        'DELETE',
+        null,
+        {
+          Authorization: 'Bearer ' + authContext.token
+        }
+      );
+      props.onDelete(props.id);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <React.Fragment>
@@ -85,10 +95,10 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMapHandler}>
               VIEW ON MAP
             </Button>
-            {(authContext.user && authContext.user.id == props.creator) && (
+            {(authContext.userId == props.creator) && (
               <Button to={`/places/${props.id}`}>EDIT</Button>
             )}
-            {(authContext.user && authContext.user.id == props.creator) && (
+            {(authContext.userId == props.creator) && (
               <Button onClick={showDeleteWarningHandler} danger>
                 DELETE
               </Button>
